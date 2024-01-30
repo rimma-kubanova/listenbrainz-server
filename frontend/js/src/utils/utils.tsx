@@ -973,6 +973,7 @@ export function getReviewEventContent(
   const userName =
     _.get(eventMetadata, "user_name") ??
     _.get(eventMetadata, "user.display_name");
+
   return (
     <div className="review">
       {!isUndefined(eventMetadata.rating) && isFinite(eventMetadata.rating) && (
@@ -982,7 +983,7 @@ export function getReviewEventContent(
             readonly
             onClick={() => {}}
             className="rating-stars"
-            ratingValue={eventMetadata.rating * 20} // CB stores ratings in 0 - 5 scale but the component requires 0 - 100
+            ratingValue={eventMetadata.rating} // CB stores ratings in 0 - 5 scale but the component requires 0 - 100 UPDATE: The component uses the same scale
             transition
             size={20}
             iconsCount={5}

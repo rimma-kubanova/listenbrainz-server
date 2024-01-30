@@ -118,7 +118,7 @@
     "@types/jest": "^29.5.3",
     "@types/less": "^3.0.3",
     "@types/lodash": "^4.14.149",
-    "@types/react": "^18.0.25",
+    "@types/react": "^18.2.48",
     "@types/react-dom": "^18.0.8",
     "@types/react-lazy-load-image-component": "^1.5.2",
     "@types/react-loader-spinner": "^3.1.0",
