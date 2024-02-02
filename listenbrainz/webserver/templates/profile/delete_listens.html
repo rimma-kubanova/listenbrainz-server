@@ -10,6 +10,10 @@
     Once deleted, all your listens data will be removed PERMANENTLY.
 </p>
 
+<p>
+    Warning: if you are still connected to Spotify, the last 50 Spotify tracks will be auto-reimported. <a href="{{ url_for("profile.music_services_details") }}">Disconnect</a> before deleting. 
+</p>
+
 <p> Note: you can export your ListenBrainz data before deleting your listens. </p>
 
 <form action="{{url_for("profile.export_data")}}" method='POST'>
