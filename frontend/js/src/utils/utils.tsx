@@ -814,6 +814,31 @@ const getAlbumArtFromReleaseMBID = async (
   return undefined;
 };
 
+const getAlbumArtFromSpotifyTrackID = async (
+  spotifyTrackID: string,
+  spotifyUser?: SpotifyUser
+): Promise<string | undefined> => {
+  const APIBaseURI = "https://api.spotify.com/v1";
+  if (!spotifyUser || !spotifyTrackID) {
+    return undefined;
+  }
+  try {
+    const response = await fetch(`${APIBaseURI}/tracks/${spotifyTrackID}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${spotifyUser?.access_token}`,
+      },
+    });
+    if (response.ok) {
+      const track: SpotifyTrack = await response.json();
+      return track.album?.images?.[0]?.url;
+    }
+  } catch (error) {
+    return undefined;
+  }
+  return undefined;
+};
+
 const getAlbumArtFromListenMetadata = async (
   listen: BaseListenFormat,
   spotifyUser?: SpotifyUser,
@@ -825,9 +850,7 @@ const getAlbumArtFromListenMetadata = async (
     SpotifyPlayer.hasPermissions(spotifyUser)
   ) {
     const trackID = SpotifyPlayer.getSpotifyTrackIDFromListen(listen);
-    return new SpotifyAPIService(spotifyUser).getAlbumArtFromSpotifyTrackID(
-      trackID
-    );
+    return getAlbumArtFromSpotifyTrackID(trackID, spotifyUser);
   }
   if (YoutubePlayer.isListenFromThisService(listen)) {
     const videoId = YoutubePlayer.getVideoIDFromListen(listen);
