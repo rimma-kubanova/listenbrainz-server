@@ -17,7 +17,7 @@ from listenbrainz.troi.export import export_to_spotify, export_to_soundcloud
 from listenbrainz.troi.import_ms import import_from_spotify, import_from_apple_music
 from listenbrainz.webserver import db_conn, ts_conn
 from listenbrainz.metadata_cache.apple.client import Apple
-
+from listenbrainz.metadata_cache.soundcloud.client import SoundCloud
 from listenbrainz.webserver.utils import parse_boolean_arg
 from listenbrainz.webserver.decorators import crossdomain, api_listenstore_needed
 from listenbrainz.webserver.errors import APIBadRequest, APIInternalServerError, APINotFound, APIForbidden, APIError, PlaylistAPIXMLError, APIUnauthorized
@@ -938,8 +938,8 @@ def import_playlist_from_music_service(service):
     """
     user = validate_auth_header()
 
-    if service != "apple_music" and service != "spotify":
-        raise APIBadRequest(f"Service {service} is not supported. We currently only support 'spotify'.")
+    if service not in ["apple_music", "spotify", "soundcloud"]:
+        raise APIBadRequest(f"Service {service} is not supported. We currently support 'spotify', 'apple_music', and 'soundcloud'.")
 
     if service == "spotify":
         spotify_service = SpotifyService()
@@ -948,6 +948,9 @@ def import_playlist_from_music_service(service):
         apple_service = AppleService()
         # TODO: implement refresh token for AppleMusic
         token = apple_service.get_user(user["id"])
+    elif service == "soundcloud":
+        soundcloud_service = SoundCloudService()
+        token = soundcloud_service.get_user(user["id"])
 
     if not token:
         raise APIBadRequest(f"Service {service} is not linked. Please link your {service} account first.")
@@ -965,9 +968,12 @@ def import_playlist_from_music_service(service):
             sp = spotipy.Spotify(token["access_token"])
             playlists = sp.current_user_playlists()
             return jsonify(playlists["items"])
-        else:
+        elif service == "apple_music":
             apple = Apple().get_user_data("https://api.music.apple.com/v1/me/library/playlists/", token["refresh_token"])
             return jsonify(apple["data"])
+        elif service == "soundcloud":
+            soundcloud = SoundCloud().get("https://api.soundcloud.com/me/playlists/")
+            return jsonify(soundcloud)
     except requests.exceptions.HTTPError as exc:
         error = exc.response.json()
         raise APIError(error.get("error") or exc.response.reason, exc.response.status_code)
