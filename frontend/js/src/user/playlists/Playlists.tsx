@@ -8,7 +8,7 @@ import {
   faFileImport,
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
-import { faSpotify, faItunesNote } from "@fortawesome/free-brands-svg-icons";
+import { faSpotify, faItunesNote, faSoundcloud } from "@fortawesome/free-brands-svg-icons";
 import * as React from "react";
 
 import NiceModal from "@ebay/nice-modal-react";
@@ -220,6 +220,29 @@ export default class UserPlaylists extends React.Component<
                   >
                     <FontAwesomeIcon icon={faItunesNote} />
                     &nbsp;Apple Music
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      NiceModal.show<JSPFPlaylist | JSPFPlaylist[], any>(
+                        ImportSoundcloudPlaylistModal
+                      ).then((playlist) => {
+                        if (Array.isArray(playlist)) {
+                          playlist.forEach((p: JSPFPlaylist) => {
+                            this.onPlaylistCreated(p);
+                          });
+                        } else {
+                          this.onPlaylistCreated(playlist);
+                        }
+                      });
+                    }}
+                    data-toggle="modal"
+                    data-target="#ImportMusicServicePlaylistModal"
+                  >
+                    <FontAwesomeIcon icon={faSoundcloud} />
+                    &nbsp;SoundCloud
                   </button>
                 </li>
                 <li>

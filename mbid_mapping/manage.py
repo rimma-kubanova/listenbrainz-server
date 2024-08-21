@@ -22,6 +22,7 @@ from mapping.mb_release_group_cache import create_mb_release_group_cache, \
     incremental_update_mb_release_group_cache
 from mapping.spotify_metadata_index import create_spotify_metadata_index
 from mapping.apple_metadata_index import create_apple_metadata_index
+from mapping.soundcloud_metadata_index import create_soundcloud_metadata_index
 from similar.tag_similarity import create_tag_similarity
 
 
@@ -199,7 +200,7 @@ def cron_update_all_mb_caches(ctx):
 @click.option("--use-lb-conn/--use-mb-conn", default=True, help="whether to create the tables in LB or MB")
 def build_spotify_metadata_index(use_lb_conn):
     """
-        Build the spotify metadata index that LB uses
+        Build the Spotify metadata index that LB uses
     """
     create_spotify_metadata_index(use_lb_conn)
 
@@ -211,7 +212,6 @@ def build_apple_metadata_index(use_lb_conn):
         Build the Apple Music metadata index that LB uses
     """
     create_apple_metadata_index(use_lb_conn)
-
 
 @cli.command()
 @click.option("--use-lb-conn/--use-mb-conn", default=True, help="whether to create the tables in LB or MB")

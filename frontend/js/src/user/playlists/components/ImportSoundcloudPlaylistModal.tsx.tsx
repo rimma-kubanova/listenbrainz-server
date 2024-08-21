@@ -31,7 +31,7 @@ export default NiceModal.create((props: ImportPLaylistModalProps) => {
   React.useEffect(() => {
     async function getUserSoundcloudPlaylists() {
       try {
-        const response = await APIService.getSoundcloudPlaylists(
+        const response = await APIService.importPlaylistFromSoundcloud(
           currentUser?.auth_token
         );
 

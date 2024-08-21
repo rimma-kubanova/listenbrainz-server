@@ -135,7 +135,10 @@ function PlaylistMenu({
     }
     let result;
     if (playlistID) {
-      result = await APIService.exportPlaylistToSpotify(auth_token, playlistID);
+      result = await APIService.exportPlaylistToSoundcloud(
+        auth_token,
+        playlistID
+      );
     } else {
       result = await APIService.exportJSPFPlaylistToSpotify(
         auth_token,
@@ -159,6 +162,37 @@ function PlaylistMenu({
       { toastId: "export-playlist" }
     );
   };
+
+  const exportToSoundcloud = async () => {
+    if (!auth_token) {
+      alertMustBeLoggedIn();
+      return;
+    }
+    let result;
+    if (playlistID) {
+      result = await APIService.exportPlaylistToSoundcloud(
+        auth_token,
+        playlistID
+      );
+    }
+    const { external_url } = result;
+    toast.success(
+      <ToastMsg
+        title="Playlist exported to Soundcloud"
+        message={
+          <>
+            Successfully exported playlist:{" "}
+            <a href={external_url} target="_blank" rel="noopener noreferrer">
+              {playlistTitle}
+            </a>
+            Heads up: the new playlist is public on Soundcloud.
+          </>
+        }
+      />,
+      { toastId: "export-playlist" }
+    );
+  };
+
   const handlePlaylistExport = async (handler: () => Promise<void>) => {
     if (!playlist || (disallowEmptyPlaylistExport && !playlist.track.length)) {
       toast.warn(
@@ -241,7 +275,7 @@ function PlaylistMenu({
               id="exportPlaylistToSpotify"
               role="button"
               href="#"
-              onClick={() => handlePlaylistExport(exportToSpotify)}
+              onClick={() => handlePlaylistExport(exportToSoundcloud)}
             >
               <FontAwesomeIcon icon={faSpotify as IconProp} /> Export to Spotify
             </a>

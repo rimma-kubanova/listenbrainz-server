@@ -2,8 +2,6 @@
 import psycopg2.extras
 from datasethoster.main import create_app, init_sentry, register_query
 
-from listenbrainz.labs_api.labs.api.apple.apple_mbid_lookup import AppleMusicIdFromMBIDQuery
-from listenbrainz.labs_api.labs.api.apple.apple_metadata_lookup import AppleMusicIdFromMetadataQuery
 from listenbrainz.labs_api.labs.api.artist_country_from_artist_mbid import ArtistCountryFromArtistMBIDQuery
 from listenbrainz.labs_api.labs.api.artist_credit_from_artist_mbid import ArtistCreditIdFromArtistMBIDQuery
 from listenbrainz.labs_api.labs.api.artist_credit_recording_release_lookup import \
@@ -20,6 +18,8 @@ from listenbrainz.labs_api.labs.api.soundcloud.soundcloud_from_mbid_lookup impor
 from listenbrainz.labs_api.labs.api.soundcloud.soundcloud_from_metadata_lookup import SoundCloudIdFromMetadataQuery
 from listenbrainz.labs_api.labs.api.spotify.spotify_mbid_lookup import SpotifyIdFromMBIDQuery
 from listenbrainz.labs_api.labs.api.spotify.spotify_metadata_lookup import SpotifyIdFromMetadataQuery
+from listenbrainz.labs_api.labs.api.apple.apple_mbid_lookup import AppleMusicIdFromMBIDQuery
+from listenbrainz.labs_api.labs.api.apple.apple_metadata_lookup import AppleMusicIdFromMetadataQuery
 from listenbrainz.labs_api.labs.api.user_listen_sessions import UserListensSessionQuery
 from listenbrainz.labs_api.labs.api.tag_similarity import TagSimilarityQuery
 from listenbrainz.labs_api.labs.api.bulk_tag_lookup import BulkTagLookup

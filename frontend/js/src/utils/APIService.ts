@@ -1175,6 +1175,19 @@ export default class APIService {
     return response.json();
   };
 
+  importPlaylistFromSoundcloud = async (userToken?: string): Promise<any> => {
+    const url = `${this.APIBaseURI}/playlist/import/soundcloud`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${userToken}`,
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+    });
+    await this.checkStatus(response);
+    return response.json();
+  };
+
   importSpotifyPlaylistTracks = async (
     userToken: string,
     playlistID: string
@@ -1196,6 +1209,22 @@ export default class APIService {
     playlistID: string
   ): Promise<any> => {
     const url = `${this.APIBaseURI}/playlist/apple_music/${playlistID}/tracks`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${userToken}`,
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+    });
+    await this.checkStatus(response);
+    return response.json();
+  };
+
+  importSoundcloudPlaylistTracks = async (
+    userToken: string,
+    playlistID: string
+  ): Promise<any> => {
+    const url = `${this.APIBaseURI}/playlist/soundcloud/${playlistID}/tracks`;
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -1460,6 +1489,22 @@ export default class APIService {
     playlist_mbid: string
   ): Promise<any> => {
     const url = `${this.APIBaseURI}/playlist/${playlist_mbid}/export/spotify`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${userToken}`,
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+    });
+    await this.checkStatus(response);
+    return response.json();
+  };
+
+  exportPlaylistToSoundcloud = async (
+    userToken: string,
+    playlist_mbid: string
+  ): Promise<any> => {
+    const url = `${this.APIBaseURI}/playlist/${playlist_mbid}/export/soundcloud`;
     const response = await fetch(url, {
       method: "POST",
       headers: {

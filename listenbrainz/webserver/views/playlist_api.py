@@ -12,7 +12,8 @@ import listenbrainz.db.playlist as db_playlist
 import listenbrainz.db.user as db_user
 from listenbrainz.domain.spotify import SpotifyService, SPOTIFY_PLAYLIST_PERMISSIONS
 from listenbrainz.domain.apple import AppleService
-from listenbrainz.troi.export import export_to_spotify
+from listenbrainz.domain.soundcloud import SoundCloudService
+from listenbrainz.troi.export import export_to_spotify, export_to_soundcloud
 from listenbrainz.troi.import_ms import import_from_spotify, import_from_apple_music
 from listenbrainz.webserver import db_conn, ts_conn
 from listenbrainz.metadata_cache.apple.client import Apple
@@ -838,11 +839,11 @@ def copy_playlist(playlist_mbid):
     return jsonify({'status': 'ok', 'playlist_mbid': new_playlist.mbid})
 
 
-@playlist_api_bp.route("/<playlist_mbid>/export/<service>", methods=["POST", "OPTIONS"])
+@playlist_api_bp.route("/<playlist_mbid>/export/spotify", methods=["POST", "OPTIONS"])
 @crossdomain
 @ratelimit()
 @api_listenstore_needed
-def export_playlist(playlist_mbid, service):
+def export_playlist(playlist_mbid):
     """
 
     Export a playlist to an external service, given a playlist MBID. 
@@ -856,7 +857,7 @@ def export_playlist(playlist_mbid, service):
     :resheader Content-Type: *application/json*
     """
     user = validate_auth_header()
-
+    service='spotify'
     if not is_valid_uuid(playlist_mbid):
         log_raise_400("Provided playlist ID is invalid.")
 
@@ -881,6 +882,44 @@ def export_playlist(playlist_mbid, service):
         error = exc.response.json()
         raise APIError(error.get("error") or exc.response.reason, exc.response.status_code)
 
+@playlist_api_bp.route("/<playlist_mbid>/export/soundcloud", methods=["POST", "OPTIONS"])
+@crossdomain
+@ratelimit()
+@api_listenstore_needed
+def export_soundcloud_playlist(playlist_mbid):
+    """
+
+    Export a playlist to an external service, given a playlist MBID. 
+
+    :reqheader Authorization: Token <user token>
+    :param playlist_mbid: The playlist mbid to export.
+    :param is_public: Should the exported playlist be public or not?
+    :statuscode 200: playlist copied.
+    :statuscode 401: invalid authorization. See error message for details.
+    :statuscode 404: Playlist not found
+    :resheader Content-Type: *application/json*
+    """
+    user = validate_auth_header()
+    
+    if not is_valid_uuid(playlist_mbid):
+        log_raise_400("Provided playlist ID is invalid.")
+
+    soundcloud_service = SoundCloudService()
+    token = soundcloud_service.get_user(user["id"])
+    print(token)
+    if not token:
+        raise APIBadRequest(f"Service soundcloud is not linked. Please link your soundcloud account first.")
+
+    is_public = parse_boolean_arg("is_public", True)
+    try:
+        url = export_to_soundcloud(user["auth_token"], token["access_token"], is_public, playlist_mbid=playlist_mbid)
+        print('hey')
+        return jsonify({"external_url": url})
+    except requests.exceptions.HTTPError as exc:
+        print('hey error')
+        raise APIError(exc.response.reason, exc.response.status_code)
+        # error = exc.response.json()
+        # raise APIError(error.get("error") or exc.response.reason, exc.response.status_code)
 
 @playlist_api_bp.route("/import/<service>", methods=["GET", "OPTIONS"])
 @crossdomain

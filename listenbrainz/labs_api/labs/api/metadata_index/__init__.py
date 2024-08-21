@@ -10,6 +10,3 @@ class BaseMetadataIndexOutput(BaseModel):
     release_name: Optional[str]
     track_name: Optional[str]
 
-
-class AppleMusicIdFromMBIDOutput(BaseMetadataIndexOutput):
-    apple_music_track_ids: Optional[list[str]]
