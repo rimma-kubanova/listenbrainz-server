@@ -91,12 +91,10 @@ export default NiceModal.create((props: ImportPLaylistModalProps) => {
     }
     setPlaylistLoading(playlistName);
     try {
-      console.log("calling soundcloud playlist tracks");
       const newPlaylist: JSPFPlaylist = await APIService.importSoundcloudPlaylistTracks(
         currentUser?.auth_token,
         playlistID
       );
-      console.log(newPlaylist);
       toast.success(
         <ToastMsg
           title="Successfully imported playlist from Soundcloud"
@@ -118,7 +116,6 @@ export default NiceModal.create((props: ImportPLaylistModalProps) => {
         />,
         { toastId: "save-playlist-error" }
       );
-      console.log(error.toString());
     }
     setPlaylistLoading(null);
   };

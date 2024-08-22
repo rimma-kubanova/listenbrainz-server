@@ -1224,22 +1224,16 @@ export default class APIService {
     userToken: string,
     playlistID: string
   ): Promise<any> => {
-    const url = `${this.APIBaseURI}/playlist/soundcloud/${playlistID}/tracks`;
-    try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Token ${userToken}`,
-          "Content-Type": "application/json;charset=UTF-8",
-        },
-      });
-      await this.checkStatus(response);
-      console.log(response);
-      return response.json();
-    } catch (error) {
-      console.log(error);
-    }
-    return {};
+    const url = `${this.APIBaseURI}/playlist/sc/${playlistID}/tracks`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${userToken}`,
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+    });
+    await this.checkStatus(response);
+    return response.json();
   };
 
   lookupMBRecording = async (

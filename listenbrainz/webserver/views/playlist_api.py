@@ -1,6 +1,5 @@
 import datetime
 from uuid import UUID
-import logging
 import psycopg2
 import spotipy
 from flask import Blueprint, current_app, jsonify, request, make_response
@@ -30,7 +29,6 @@ from listenbrainz.db.model.playlist import Playlist, WritablePlaylist, WritableP
 from listenbrainz.webserver.views.api import serialize_playlists
 
 playlist_api_bp = Blueprint('playlist_api_v1', __name__)
-logger = logging.getLogger(__name__)
 
 MAX_RECORDINGS_PER_ADD = 100
 DEFAULT_NUMBER_OF_PLAYLISTS_PER_CALL = 25
@@ -980,7 +978,7 @@ def import_playlist_from_music_service(service):
         raise APIError(error.get("error") or exc.response.reason, exc.response.status_code)
 
 
-@playlist_api_bp.route("/soundcloud/<playlist_id>/tracks", methods=["GET", "OPTIONS"])
+@playlist_api_bp.route("/sc/<playlist_id>/tracks", methods=["GET", "OPTIONS"])
 @crossdomain
 @ratelimit()
 @api_listenstore_needed
@@ -997,23 +995,18 @@ def import_tracks_from_soundcloud_playlist(playlist_id):
     :resheader Content-Type: *application/json*
     """
     user = validate_auth_header()
-    print("tokeeem")
-    logger.info("token here")
+
     soundcloud_service = SoundCloudService()
     token = soundcloud_service.get_user(user["id"])
-    print(token)
-    print("token")
     if not token:
         raise APIBadRequest(f"Service SoundCloud is not linked. Please link your SoundCloud account first.")
 
-    # try:
-    #     # playlist = import_from_soundcloud(token["access_token"], user["auth_token"], playlist_id)
-    #     print("playlist")
-    #     # print(playlist)
-    #     # return playlist
-    # except requests.exceptions.HTTPError as exc:
-    #     error = exc.response.json()
-    #     raise APIError(error.get("error") or exc.response.reason, exc.response.status_code)
+    try:
+        playlist = import_from_soundcloud(token["access_token"], user["auth_token"], playlist_id)
+        return playlist
+    except requests.exceptions.HTTPError as exc:
+        error = exc.response.json()
+        raise APIError(error.get("error") or exc.response.reason, exc.response.status_code)
 
 
 @playlist_api_bp.route("/spotify/<playlist_id>/tracks", methods=["GET", "OPTIONS"])
