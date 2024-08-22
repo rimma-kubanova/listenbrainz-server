@@ -3,7 +3,7 @@ declare type SoundCloudUser = {
   };
 
 declare type SoundCloudTrackObject = {
-    id: number;
+    id: string;
     permalink_url: string;
     artwork_url?: string;
     title: string;
@@ -17,10 +17,10 @@ declare type SoundCloudTrackObject = {
 };
 
 declare type SoundCloudPlaylistObject = {
-    id: number;
+    id: string;
     title: string;
     description?: string;
-    tracks: SoundCloudTrack[];
+    tracks: SoundCloudTrackObject[];
     created_at: string;
     duration: number;
     artwork_url?: string;

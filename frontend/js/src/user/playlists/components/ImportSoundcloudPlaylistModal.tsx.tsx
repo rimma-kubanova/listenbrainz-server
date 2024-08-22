@@ -48,9 +48,7 @@ export default NiceModal.create((props: ImportPLaylistModalProps) => {
               error?.message === "Forbidden" ? (
                 <>
                   Session has expired. Please reconnect to{" "}
-                  <Link to="/settings/music-services/details/">
-                    Soundcloud
-                  </Link>
+                  <Link to="/settings/music-services/details/">Soundcloud</Link>
                   .
                 </>
               ) : (
@@ -93,10 +91,12 @@ export default NiceModal.create((props: ImportPLaylistModalProps) => {
     }
     setPlaylistLoading(playlistName);
     try {
+      console.log("calling soundcloud playlist tracks");
       const newPlaylist: JSPFPlaylist = await APIService.importSoundcloudPlaylistTracks(
         currentUser?.auth_token,
         playlistID
       );
+      console.log(newPlaylist);
       toast.success(
         <ToastMsg
           title="Successfully imported playlist from Soundcloud"
@@ -118,6 +118,7 @@ export default NiceModal.create((props: ImportPLaylistModalProps) => {
         />,
         { toastId: "save-playlist-error" }
       );
+      console.log(error.toString());
     }
     setPlaylistLoading(null);
   };
@@ -171,10 +172,7 @@ export default NiceModal.create((props: ImportPLaylistModalProps) => {
                   disabled={!!playlistLoading}
                   name={playlist.title}
                   onClick={() =>
-                    importTracksToPlaylist(
-                      playlist.id,
-                      playlist.title
-                    )
+                    importTracksToPlaylist(playlist.id, playlist.title)
                   }
                 >
                   <span>{playlist.title}</span>

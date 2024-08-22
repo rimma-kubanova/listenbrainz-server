@@ -1225,15 +1225,21 @@ export default class APIService {
     playlistID: string
   ): Promise<any> => {
     const url = `${this.APIBaseURI}/playlist/soundcloud/${playlistID}/tracks`;
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Token ${userToken}`,
-        "Content-Type": "application/json;charset=UTF-8",
-      },
-    });
-    await this.checkStatus(response);
-    return response.json();
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Token ${userToken}`,
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+      });
+      await this.checkStatus(response);
+      console.log(response);
+      return response.json();
+    } catch (error) {
+      console.log(error);
+    }
+    return {};
   };
 
   lookupMBRecording = async (

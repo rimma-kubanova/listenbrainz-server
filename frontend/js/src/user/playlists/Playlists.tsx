@@ -8,7 +8,11 @@ import {
   faFileImport,
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
-import { faSpotify, faItunesNote, faSoundcloud } from "@fortawesome/free-brands-svg-icons";
+import {
+  faSpotify,
+  faItunesNote,
+  faSoundcloud,
+} from "@fortawesome/free-brands-svg-icons";
 import * as React from "react";
 
 import NiceModal from "@ebay/nice-modal-react";
@@ -25,6 +29,7 @@ import CreateOrEditPlaylistModal from "../../playlists/components/CreateOrEditPl
 import ImportPlaylistModal from "./components/ImportJSPFPlaylistModal";
 import ImportSpotifyPlaylistModal from "./components/ImportSpotifyPlaylistModal";
 import ImportAppleMusicPlaylistModal from "./components/ImportAppleMusicPlaylistModal";
+import ImportSoundcloudPlaylistModal from "./components/ImportSoundcloudPlaylistModal.tsx";
 import PlaylistsList from "./components/PlaylistsList";
 import { getPlaylistId, PlaylistType } from "../../playlists/utils";
 

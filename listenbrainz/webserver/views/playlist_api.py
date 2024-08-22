@@ -1,6 +1,6 @@
 import datetime
 from uuid import UUID
-
+import logging
 import psycopg2
 import spotipy
 from flask import Blueprint, current_app, jsonify, request, make_response
@@ -14,7 +14,7 @@ from listenbrainz.domain.spotify import SpotifyService, SPOTIFY_PLAYLIST_PERMISS
 from listenbrainz.domain.apple import AppleService
 from listenbrainz.domain.soundcloud import SoundCloudService
 from listenbrainz.troi.export import export_to_spotify, export_to_soundcloud
-from listenbrainz.troi.import_ms import import_from_spotify, import_from_apple_music
+from listenbrainz.troi.import_ms import import_from_spotify, import_from_apple_music, import_from_soundcloud
 from listenbrainz.webserver import db_conn, ts_conn
 from listenbrainz.metadata_cache.apple.client import Apple
 from listenbrainz.metadata_cache.soundcloud.client import SoundCloud
@@ -30,6 +30,7 @@ from listenbrainz.db.model.playlist import Playlist, WritablePlaylist, WritableP
 from listenbrainz.webserver.views.api import serialize_playlists
 
 playlist_api_bp = Blueprint('playlist_api_v1', __name__)
+logger = logging.getLogger(__name__)
 
 MAX_RECORDINGS_PER_ADD = 100
 DEFAULT_NUMBER_OF_PLAYLISTS_PER_CALL = 25
@@ -972,11 +973,47 @@ def import_playlist_from_music_service(service):
             apple = Apple().get_user_data("https://api.music.apple.com/v1/me/library/playlists/", token["refresh_token"])
             return jsonify(apple["data"])
         elif service == "soundcloud":
-            soundcloud = SoundCloud().get("https://api.soundcloud.com/me/playlists/")
+            soundcloud = SoundCloud(token["access_token"]).get("https://api.soundcloud.com/me/playlists/")
             return jsonify(soundcloud)
     except requests.exceptions.HTTPError as exc:
         error = exc.response.json()
         raise APIError(error.get("error") or exc.response.reason, exc.response.status_code)
+
+
+@playlist_api_bp.route("/soundcloud/<playlist_id>/tracks", methods=["GET", "OPTIONS"])
+@crossdomain
+@ratelimit()
+@api_listenstore_needed
+def import_tracks_from_soundcloud_playlist(playlist_id):
+    """
+
+    Import a playlist tracks from a Apple Music and convert them to JSPF.
+
+    :reqheader Authorization: Token <user token>
+    :param playlist_id: The Apple Music playlist id to get the tracks from
+    :statuscode 200: tracks are fetched and converted.
+    :statuscode 401: invalid authorization. See error message for details.
+    :statuscode 404: Playlist not found
+    :resheader Content-Type: *application/json*
+    """
+    user = validate_auth_header()
+    print("tokeeem")
+    logger.info("token here")
+    soundcloud_service = SoundCloudService()
+    token = soundcloud_service.get_user(user["id"])
+    print(token)
+    print("token")
+    if not token:
+        raise APIBadRequest(f"Service SoundCloud is not linked. Please link your SoundCloud account first.")
+
+    # try:
+    #     # playlist = import_from_soundcloud(token["access_token"], user["auth_token"], playlist_id)
+    #     print("playlist")
+    #     # print(playlist)
+    #     # return playlist
+    # except requests.exceptions.HTTPError as exc:
+    #     error = exc.response.json()
+    #     raise APIError(error.get("error") or exc.response.reason, exc.response.status_code)
 
 
 @playlist_api_bp.route("/spotify/<playlist_id>/tracks", methods=["GET", "OPTIONS"])

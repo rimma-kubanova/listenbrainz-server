@@ -8,9 +8,8 @@ from listenbrainz.webserver.errors import APIForbidden
 
 class SoundCloud:
 
-    def __init__(self):
-        tokens = SoundCloudService().fetch_access_token()
-        self.developer_token = tokens["access_token"]
+    def __init__(self, token):
+        self.developer_token = token
         self.retries = 5
 
     def _get_requests_session(self):
@@ -37,7 +36,4 @@ class SoundCloud:
                 if response.status_code == 200:
                     return response.json()
 
-                if response.status_code == 403:
-                    tokens = SoundCloudService().fetch_access_token()
-                    self.developer_token = tokens["access_token"]
             response.raise_for_status()
