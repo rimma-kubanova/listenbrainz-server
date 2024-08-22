@@ -874,7 +874,7 @@ def export_playlist(playlist_mbid, service):
     if not token:
         raise APIBadRequest(f"Service {service} is not linked. Please link your {service} account first.")
 
-    if service=='spotify' and not SPOTIFY_PLAYLIST_PERMISSIONS.issubset(set(token["scopes"])):
+    if service == 'spotify' and not SPOTIFY_PLAYLIST_PERMISSIONS.issubset(set(token["scopes"])):
         raise APIBadRequest(f"Missing scopes playlist-modify-public and playlist-modify-private to export playlists."
                             f" Please relink your {service} account from ListenBrainz settings with appropriate scopes"
                             f" to use this feature.")
@@ -905,15 +905,16 @@ def import_playlist_from_music_service(service):
     :resheader Content-Type: *application/json*
     """
     user = validate_auth_header()
-    
+
     supported_services = {
         "spotify": SpotifyService,
         "apple_music": AppleService,
         "soundcloud": SoundCloudService
     }
-    
+
     if service not in supported_services:
-        raise APIBadRequest(f"Service '{service}' is not supported. Supported services are: 'spotify', 'apple_music', 'soundcloud'.")
+        raise APIBadRequest(f"Service '{service}' is not supported. 
+                            Supported services are: 'spotify', 'apple_music', 'soundcloud'.")
 
     service_class = supported_services[service]()
     if service == "spotify":
@@ -923,10 +924,10 @@ def import_playlist_from_music_service(service):
 
     if not token:
         raise APIBadRequest(f"Service {service} is not linked. Please link your {service} account first.")
-    
+
     if service == "apple_music" and not token.get("refresh_token"):
         raise APIBadRequest("Not authorized to Apple Music. Please link your account first.")
-    
+
     if service == "spotify" and not SPOTIFY_PLAYLIST_PERMISSIONS.issubset(set(token["scopes"])):
         raise APIBadRequest(f"Missing scopes playlist-modify-public and playlist-modify-private to export playlists."
                             f" Please relink your {service} account from ListenBrainz settings with appropriate scopes"

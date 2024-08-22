@@ -25,6 +25,7 @@ def export_to_spotify(lb_token, spotify_token, is_public, playlist_mbid=None, js
     metadata = playlist.playlists[0].additional_metadata
     return metadata["external_urls"]["spotify"]
 
+
 def export_to_soundcloud(lb_token, soundcloud_token, is_public, playlist_mbid=None, jspf=None):
     soundcloud_user_id = SoundCloud(soundcloud_token).get("https://api.soundcloud.com/me/")["id"]
     args = {

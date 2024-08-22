@@ -270,22 +270,33 @@ function PlaylistMenu({
           </li>
         </>
       )}
+      <li role="separator" className="divider" />
       {showSpotifyExportButton && (
-        <>
-          <li role="separator" className="divider" />
-          <li>
-            <a
-              id="exportPlaylistToSpotify"
-              role="button"
-              href="#"
-              onClick={() => handlePlaylistExport(exportToSpotify)}
-            >
-              <FontAwesomeIcon icon={faSpotify as IconProp} /> Export to Spotify
-            </a>
-          </li>
-        </>
+        <li>
+          <a
+            id="exportPlaylistToSpotify"
+            role="button"
+            href="#"
+            onClick={() => handlePlaylistExport(exportToSpotify)}
+          >
+            <FontAwesomeIcon icon={faSpotify as IconProp} /> Export to Spotify
+          </a>
+        </li>
       )}
       {showSoundCloudExportButton && (
+        <li>
+          <a
+            id="exportPlaylistToSoundCloud"
+            role="button"
+            href="#"
+            onClick={() => handlePlaylistExport(exportToSoundcloud)}
+          >
+            <FontAwesomeIcon icon={faSoundcloud as IconProp} /> Export to
+            SoundCloud
+          </a>
+        </li>
+      )}
+      {/* {showSoundCloudExportButton && (
         <>
           <li role="separator" className="divider" />
           <li>
@@ -300,7 +311,7 @@ function PlaylistMenu({
             </a>
           </li>
         </>
-      )}
+      )} */}
       <li role="separator" className="divider" />
       <li>
         <a
