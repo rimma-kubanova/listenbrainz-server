@@ -1026,7 +1026,7 @@ def export_playlist(playlist_mbid, service):
         log_raise_400("Provided playlist ID is invalid.")
 
     if service != "spotify" and service != "soundcloud":
-        raise APIBadRequest(f"Service {service} is not supported. We currently only support 'spotify' and 'soundcloud'.")
+        raise APIBadRequest(f"Service {service} is not supported. We currently only support 'spotify'.")
 
     if service == "spotify":
         spotify_service = SpotifyService()
@@ -1073,7 +1073,7 @@ def export_playlist_jspf(service):
     user = validate_auth_header()
 
     if service != "spotify" and service != "soundcloud":
-        raise APIBadRequest(f"Service {service} is not supported. We currently only support 'spotify' and 'soundcloud'.")
+        raise APIBadRequest(f"Service {service} is not supported. We currently only support 'spotify'.")
 
     if service == "spotify":
         spotify_service = SpotifyService()
