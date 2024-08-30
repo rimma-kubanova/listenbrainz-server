@@ -1011,7 +1011,7 @@ def import_tracks_from_soundcloud_playlist(playlist_id):
 def export_playlist(playlist_mbid, service):
     """
 
-    Export a playlist to an external service, given a playlist MBID. 
+    Export a playlist to an external service, given a playlist MBID.
 
     :reqheader Authorization: Token <user token>
     :param playlist_mbid: The playlist mbid to export.
