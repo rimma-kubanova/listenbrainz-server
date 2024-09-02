@@ -611,7 +611,7 @@ type MissingMBData = {
   artist_name: string;
   listened_at: string;
   recording_name: string;
-  release_name?: string;
+  release_name?: string | null;
   recording_msid: string;
 };
 
